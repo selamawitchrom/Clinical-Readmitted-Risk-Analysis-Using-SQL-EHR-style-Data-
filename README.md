@@ -86,7 +86,7 @@ hospital-readmission-analysis
 - Medication burden, chronic conditions, and discharge outcomes are key drivers of readmission risk
 - Rule-based risk scoring can support care management and population health initiatives
 ---
-##  Name
+##  Author
 **Selamawit Engeda**  
 Healthcare Informatics | Clinical Data & Systems Analysis
 
