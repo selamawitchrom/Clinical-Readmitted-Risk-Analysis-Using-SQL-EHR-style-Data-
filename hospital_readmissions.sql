@@ -55,6 +55,10 @@ select med_group,
    --- Risk Factors to Identify Patient High Risk----
 
    select patient_id,
+     medication_count,
+     length_of_stay,
+     age, 
+     discharge_destination,
    (case when medication_count > 5 then 1 else 0 end +
    case when length_of_stay > 5 then 1 else 0 end +
     case when age > 67 then 1 else 0 end +
@@ -64,21 +68,22 @@ select med_group,
 
     ----- Which Age Group Has The Highest Readmission----?
 
-select 
-  case 
-    when age < 40 then 'under 40 '
-    when age BETWEEN 45 and 60 THEN '45-60'
-    else '60+'
-  end as age_group, 
- Count(*) as total_patients 
-from hospital_readmissions
- group by 
-  case 
-      when age <40 then 'under 40 '
-      when age BETWEEN 45 and 60 THEN '45-60'
-  else '60+'
-  end
-    order by age_group 
+WITH age_groups AS (
+  SELECT 
+    CASE 
+      WHEN age < 45 THEN 'Under 45'
+      WHEN age BETWEEN 45 AND 60 THEN '45–60'
+      ELSE '60+'
+    END AS age_group
+  FROM hospital_readmissions
+)
+SELECT 
+  age_group,
+  COUNT(*) AS total_patients,
+  ROUND(AVG(CAST(readmitted_30_days AS FLOAT)) * 100, 2) AS readmission_rate
+FROM age_groups
+GROUP BY age_group
+ORDER BY age_group;
 
     ---------Identified Patiensts with Long Stays and High Medication Burdn Who Were not Readmiitted
 
@@ -121,6 +126,6 @@ from hospital_readmissions
   round(AVG(CASt(readmitted_30_days as float)) * 100,2) as readmission_rate
   from hospital_readmissions
   where cholesterol = 1
-
+ORDER BY readmission_rate DESC;
 
   
